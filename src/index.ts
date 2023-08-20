@@ -160,8 +160,26 @@ export default function getDexList(): IDexInfo[] {
             dexName: 'UniswapV2',
             dexType: IDexType.Normal,
             details : [
-                {   
+                {
                     chainId: 1,
+                    routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+                    factoryAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 4,
+                    routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+                    factoryAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 42,
                     routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
                     factoryAddress: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
                     tradeFee: {
@@ -171,16 +189,70 @@ export default function getDexList(): IDexInfo[] {
                 },
             ],
             image: fullPath('/img/uniswap-logo.svg')
-        },        
+        },
         {
             dexCode: 'SushiSwapV2',
             dexName: 'SushiSwapV2',
             dexType: IDexType.Normal,
             details : [
-                {   
+                {
                     chainId: 1,
                     routerAddress: '0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F',
                     factoryAddress: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 42,
+                    routerAddress: '0x027Bb5f9205360aC628C33508c3f182320A44525',
+                    factoryAddress: '0xaDe0ad525430cfe17218B679483c46B6c1d63fe2',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 137,
+                    routerAddress: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+                    factoryAddress: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 43114,
+                    routerAddress: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+                    factoryAddress: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 43113,
+                    routerAddress: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+                    factoryAddress: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 250,
+                    routerAddress: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+                    factoryAddress: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    }
+                },
+                {
+                    chainId: 42161,
+                    routerAddress: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+                    factoryAddress: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
                     tradeFee: {
                         fee: '3',
                         base: '1000'
@@ -194,6 +266,24 @@ export default function getDexList(): IDexInfo[] {
             dexName: 'OpenSwap',
             dexType: IDexType.Normal,
             details : [
+                {
+                    chainId: 4,
+                    routerAddress: '0x5837a508B429788a576357A4bF78a3e0DA1A684e',
+                    factoryAddress: '0x051732011D8b709322C6fC1fE517f68d10Db1b8f',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 42,
+                    routerAddress: '0x889460F92f51Cd0c4E66DDc707c267C55823a31b',
+                    factoryAddress: '0x13aCdFbbeeB2DcB245BFbf2993FFCe7eeab8dEdB',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
                 {   
                     chainId: 56,
                     routerAddress: '0x50f5679F0CeF71287bD9C7e619960fF9C579661C',
@@ -213,6 +303,42 @@ export default function getDexList(): IDexInfo[] {
                     },
                 },
                 {
+                    chainId: 137,
+                    routerAddress: '0x1C2D10aFe50FDf1E334EfBd33604077d55a6d545',
+                    factoryAddress: '0x73De9ef746560A1C49b606D08947b42ce527Bd56',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 1287,
+                    routerAddress: '0x6d2E47a68B8CA4F18b15c54F8a8A5d12CC7ca871',
+                    factoryAddress: '0xB596Aa20F4E947f9A0F5d7154C07677309C308f2',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 1337,
+                    routerAddress: '0x31F69F69C8B643546A2a69660763042C7D92a77a',
+                    factoryAddress: '0xa5f6e01F5070a80d428320043c03a6fA05aA8F78',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 4002,
+                    routerAddress: '0xDcdAFd9461c2df544F6E2165481E8174e45fEbD8',
+                    factoryAddress: '0xE0B60F919E6051a5533ffa5B61CF0d5b27cD1cbf',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
                     chainId: 43113,
                     routerAddress: '0xc9C6f026E489e0A8895F67906ef1627f1E56860d',
                     factoryAddress: '0x9560fD7C36527001D3Fea2510D405F77cB6AD739',
@@ -220,8 +346,70 @@ export default function getDexList(): IDexInfo[] {
                         fee: '200',
                         base: '100000'
                     },
-                }
-                
+                },
+                {
+                    chainId: 43114,
+                    routerAddress: '0x56131021109f14E766E96a5E7c1294D351e9dFc5',
+                    factoryAddress: '0x667ae7a348610d42d9955d1b43868683a34b1aab',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 13370,
+                    routerAddress: '0x4Dd2748168a1B60ea59990E57D70Ae1E7b9958fB',
+                    factoryAddress: '0x76c9DB339F5E0C3613bcbD309474B8b7BDf7395e',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 42161,
+                    routerAddress: '0x73De9ef746560A1C49b606D08947b42ce527Bd56',
+                    factoryAddress: '0xAF541a5cA39A4D2BF067E03431aa287bF81aA33B',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 421613,
+                    routerAddress: '0xc441538c208e38C8B8cbc1028dd270049CD73761',
+                    factoryAddress: '0x5A9C508ee45d417d176CddADFb151DDC1Fcd21D9',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 31337,
+                    routerAddress: '0xE0B60F919E6051a5533ffa5B61CF0d5b27cD1cbf',
+                    factoryAddress: '0xF1AFa2C0Df79b9cf7fD40b5670382A04276DAEEF',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 80001,
+                    routerAddress: '0xbd1f589480883C171783e1fcD5eD5Fb045bBDF74',
+                    factoryAddress: '0x0744B6485dF714A4baBB09a1e9870D84Ad751818',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
+                {
+                    chainId: 13370,
+                    routerAddress: '0x4Dd2748168a1B60ea59990E57D70Ae1E7b9958fB',
+                    factoryAddress: '0x76c9DB339F5E0C3613bcbD309474B8b7BDf7395e',
+                    tradeFee: {
+                        fee: '200',
+                        base: '100000'
+                    },
+                },
             ],
             image: fullPath('/img/openswap.png')
         },
@@ -230,10 +418,19 @@ export default function getDexList(): IDexInfo[] {
             dexName: 'PancakeSwapV2',
             dexType: IDexType.Normal,
             details : [
-                {   
+                {
                     chainId: 56,
                     routerAddress: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
                     factoryAddress: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+                    tradeFee: {
+                        fee: '25',
+                        base: '10000'
+                    },
+                },
+                {
+                    chainId: 97,
+                    routerAddress: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1',
+                    factoryAddress: '0x6725f303b657a9451d8ba641348b6761a6cc7a17',
                     tradeFee: {
                         fee: '25',
                         base: '10000'
@@ -250,7 +447,24 @@ export default function getDexList(): IDexInfo[] {
                 },
             ],
             image: fullPath('/img/pancakeswap.svg')
-        },     
+        },
+        {
+            dexCode: 'PancakeSwapV1',
+            dexName: 'PancakeSwapV1',
+            dexType: IDexType.Normal,
+            details : [
+                {   
+                    chainId: 56,
+                    routerAddress: '0x05ff2b0db69458a0750badebc4f9e13add608c7f',
+                    factoryAddress: '0xbcfccbde45ce874adcb698cc183debcf17952812',
+                    tradeFee: {
+                        fee: '2',
+                        base: '1000'
+                    },
+                },
+            ],
+            image: fullPath('/img/pancakeswap.svg')
+        }, 
         {
             dexCode: 'IFSwapV1',
             dexName: 'IFSwapV1',
@@ -350,10 +564,19 @@ export default function getDexList(): IDexInfo[] {
             dexName: 'Pangolin',
             dexType: IDexType.TraderJoe,
             details : [
-                {   
+                {
                     chainId: 43114,
                     routerAddress: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
                     factoryAddress: '0xefa94DE7a4656D787667C749f7E1223D71E9FD88',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    },
+                },
+                {
+                    chainId: 43113,
+                    routerAddress: '0x2D99ABD9008Dc933ff5c0CD271B88309593aB921',
+                    factoryAddress: '0xE4A575550C2b460d2307b82dCd7aFe84AD1484dd',
                     tradeFee: {
                         fee: '3',
                         base: '1000'
