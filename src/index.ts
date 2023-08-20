@@ -558,11 +558,11 @@ export default function getDexList(): IDexInfo[] {
                 },
             ],
             image: fullPath('/img/traderjoe.svg')
-        },        
+        },
         {
             dexCode: 'Pangolin',
             dexName: 'Pangolin',
-            dexType: IDexType.TraderJoe,
+            dexType: IDexType.Normal,
             details : [
                 {
                     chainId: 43114,
@@ -577,6 +577,32 @@ export default function getDexList(): IDexInfo[] {
                     chainId: 43113,
                     routerAddress: '0x2D99ABD9008Dc933ff5c0CD271B88309593aB921',
                     factoryAddress: '0xE4A575550C2b460d2307b82dCd7aFe84AD1484dd',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    },
+                },
+            ],
+            image: fullPath('/img/pangolin.svg')
+        },
+        {
+            dexCode: 'BurgerSwap',
+            dexName: 'BurgerSwap',
+            dexType: IDexType.Normal,
+            details : [
+                {
+                    chainId: 56,
+                    routerAddress: '0x42591f57f707739b95c5c486c014b525f19d70ca',
+                    factoryAddress: '0x8a1E9d3aEbBBd5bA2A64d3355A48dD5E9b511256',
+                    tradeFee: {
+                        fee: '3',
+                        base: '1000'
+                    },
+                },
+                {
+                    chainId: 97,
+                    routerAddress: '0x11614C8DFd440a05F92eA70d75f7dC6Ec8011bb6',
+                    factoryAddress: '0xEa7B5325407084A37057b422cCF69B1a56f5fBf2',
                     tradeFee: {
                         fee: '3',
                         base: '1000'
