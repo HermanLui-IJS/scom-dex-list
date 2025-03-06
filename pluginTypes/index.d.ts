@@ -1,6 +1,6 @@
 /// <amd-module name="@scom/scom-dex-list/interfaces.ts" />
 declare module "@scom/scom-dex-list/interfaces.ts" {
-    import { BigNumber, TransactionOptions, TransactionReceipt } from '@ijstech/eth-contract';
+    import { BigNumber, TransactionOptions, TransactionReceipt, Event } from '@ijstech/eth-contract';
     export interface ITradeFeeInfo {
         fee: string;
         base: string;
@@ -45,12 +45,20 @@ declare module "@scom/scom-dex-list/interfaces.ts" {
         reserveA: BigNumber;
         reserveB: BigNumber;
     }
+    export interface ISwapEvent {
+        sender: string;
+        amount0In: BigNumber;
+        amount1In: BigNumber;
+        amount0Out: BigNumber;
+        amount1Out: BigNumber;
+        to: string;
+        _event: Event;
+    }
 }
 /// <amd-module name="@scom/scom-dex-list/routerSwap.ts" />
 declare module "@scom/scom-dex-list/routerSwap.ts" {
     import { Contracts as BakeryContracts } from '@scom/oswap-bakery-swap-contract';
     import { Contracts as TraderJoeContracts } from '@scom/oswap-trader-joe-contract';
-    import { IRpcWallet } from '@ijstech/eth-wallet';
     import { IDexType, IRouterSwapOutput } from "@scom/scom-dex-list/interfaces.ts";
     export abstract class RouterSwap {
         protected router: any;
@@ -103,14 +111,14 @@ declare module "@scom/scom-dex-list/routerSwap.ts" {
         swapTokensForExactETH: any;
     }
     export function getRouterSwap(dexType: IDexType, routerAddress: string): RouterSwap;
-    export function getSwapProxySelectors(wallet: IRpcWallet, dexType: IDexType, chainId: number, routerAddress: string): Promise<string[]>;
+    export function getSwapProxySelectors(dexType: IDexType, chainId: number, routerAddress: string): Promise<string[]>;
 }
 /// <amd-module name="@scom/scom-dex-list/dexPair.ts" />
 declare module "@scom/scom-dex-list/dexPair.ts" {
     import { Contracts as OswapContracts } from '@scom/oswap-openswap-contract';
     import { Contracts as IFSwapContracts } from '@scom/oswap-impossible-swap-contract';
-    import { BigNumber, IRpcWallet } from '@ijstech/eth-wallet';
-    import { IDexPairReserves, IDexType } from "@scom/scom-dex-list/interfaces.ts";
+    import { BigNumber, IRpcWallet, TransactionReceipt } from '@ijstech/eth-wallet';
+    import { IDexPairReserves, IDexType, ISwapEvent } from "@scom/scom-dex-list/interfaces.ts";
     import { TransactionOptions } from '@ijstech/eth-contract';
     export abstract class DexPair {
         protected pair: any;
@@ -134,21 +142,26 @@ declare module "@scom/scom-dex-list/dexPair.ts" {
             reserve1: BigNumber;
         }>;
     }
-    export function getDexPair(wallet: IRpcWallet, dexType: IDexType, pairAddress: string): DexPair;
+    export interface IGetDexPairOutput {
+        dexPair: DexPair;
+        contract: any;
+    }
+    export function getDexPair(wallet: IRpcWallet, dexType: IDexType, pairAddress: string): IGetDexPairOutput;
+    export function parseSwapEvents(wallet: IRpcWallet, receipt: TransactionReceipt, pairAddresses: string[]): ISwapEvent[];
 }
 /// <amd-module name="@scom/scom-dex-list" />
 declare module "@scom/scom-dex-list" {
     import { TransactionReceipt } from '@ijstech/eth-contract';
     import { getSwapProxySelectors } from "@scom/scom-dex-list/routerSwap.ts";
-    import { IDexInfo, IDexType, IDexDetail, IExecuteSwapOptions, IGetDexPairReservesOutput } from "@scom/scom-dex-list/interfaces.ts";
-    import { IRpcWallet } from '@ijstech/eth-wallet';
-    export { IDexInfo, IDexType, IExecuteSwapOptions, IGetDexPairReservesOutput, getSwapProxySelectors };
+    import { IDexInfo, IDexType, IDexDetail, IExecuteSwapOptions, IGetDexPairReservesOutput, ISwapEvent } from "@scom/scom-dex-list/interfaces.ts";
+    import { parseSwapEvents } from "@scom/scom-dex-list/dexPair.ts";
+    export { IDexInfo, IDexType, IExecuteSwapOptions, IGetDexPairReservesOutput, getSwapProxySelectors, IDexDetail, ISwapEvent, parseSwapEvents };
     export function findDex(dexCode: string): IDexInfo;
     export function findDexDetail(dexCode: string, chainId: number): {
         dexInfo: IDexInfo;
         dexDetail: IDexDetail;
     };
-    export function getDexPairReserves(wallet: IRpcWallet, chainId: number, dexCode: string, pairAddress: string, tokenInAddress: string, tokenOutAddress: string): Promise<IGetDexPairReservesOutput>;
+    export function getDexPairReserves(chainId: number, dexCode: string, pairAddress: string, tokenInAddress: string, tokenOutAddress: string): Promise<IGetDexPairReservesOutput>;
     export function getRouterSwapTxData(chainId: number, dexCode: string, options: IExecuteSwapOptions): Promise<string>;
     export function executeRouterSwap(chainId: number, dexCode: string, options: IExecuteSwapOptions): Promise<TransactionReceipt>;
     export default function getDexList(): IDexInfo[];

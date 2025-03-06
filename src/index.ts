@@ -1,12 +1,13 @@
 import { BigNumber, TransactionReceipt } from '@ijstech/eth-contract';
 import { application } from '@ijstech/components';
 import { getRouterSwap, getSwapProxySelectors } from './routerSwap';
-import { IDexInfo, IDexType, IDexDetail, IExecuteSwapOptions, IGetDexPairReservesOutput } from './interfaces';
-import { getDexPair } from './dexPair';
-import { IRpcWallet } from '@ijstech/eth-wallet';
+import { IDexInfo, IDexType, IDexDetail, IExecuteSwapOptions, IGetDexPairReservesOutput, ISwapEvent } from './interfaces';
+import { getDexPair, parseSwapEvents } from './dexPair';
+import { IRpcWallet, RpcWallet } from '@ijstech/eth-wallet';
+
 let moduleDir = application.currentModuleDir;
 
-export { IDexInfo, IDexType, IExecuteSwapOptions, IGetDexPairReservesOutput, getSwapProxySelectors };
+export { IDexInfo, IDexType, IExecuteSwapOptions, IGetDexPairReservesOutput, getSwapProxySelectors, IDexDetail, ISwapEvent, parseSwapEvents };
 
 function fullPath(path: string): string {
     if (path.indexOf('://') > 0)
@@ -26,7 +27,6 @@ export function findDexDetail(dexCode: string, chainId: number) {
 }
 
 export async function getDexPairReserves(
-    wallet: IRpcWallet, 
     chainId: number, 
     dexCode: string, 
     pairAddress: string, 
@@ -35,8 +35,10 @@ export async function getDexPairReserves(
 ) {
     const dexInfo = findDex(dexCode);
     if (!dexInfo) return Promise.reject(new Error('Dex not found'));
-    let pair = getDexPair(wallet, dexInfo.dexType, pairAddress);
-    let reserves = await pair.getReserves();
+    const wallet = RpcWallet.getRpcWallet(chainId);
+    let dexPairObject = getDexPair(wallet, dexInfo.dexType, pairAddress);
+    let dexPair = dexPairObject.dexPair;
+    let reserves = await dexPair.getReserves();
     let reserveObj: IGetDexPairReservesOutput;
     if (new BigNumber(tokenInAddress.toLowerCase()).lt(tokenOutAddress.toLowerCase())) {
       reserveObj = {
@@ -106,7 +108,6 @@ export async function executeRouterSwap(chainId: number, dexCode: string, option
     const {dexInfo, dexDetail} = findDexDetail(dexCode,chainId);
     if (!dexInfo || !dexDetail) return Promise.reject(new Error('Dex not found'));
     let receipt: TransactionReceipt;
-    // await application.loadPackage('@scom/oswap-trader-joe-contract', '*');
     let routerSwap = getRouterSwap(dexInfo.dexType, dexDetail.routerAddress);
 
     if (options.exactType === 'exactIn') {

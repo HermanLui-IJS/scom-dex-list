@@ -101,11 +101,10 @@ define("@scom/scom-dex-list/routerSwap.ts", ["require", "exports", "@scom/oswap-
         return routerSwap;
     }
     exports.getRouterSwap = getRouterSwap;
-    async function getSwapProxySelectors(wallet, dexType, chainId, routerAddress) {
+    async function getSwapProxySelectors(dexType, chainId, routerAddress) {
         let routerSwap;
         let router;
-        if (wallet.chainId != chainId)
-            await wallet.switchNetwork(chainId);
+        let wallet = eth_wallet_1.RpcWallet.getRpcWallet(chainId);
         if (dexType === interfaces_1.IDexType.BakerySwap) {
             router = new oswap_bakery_swap_contract_1.Contracts.BakerySwapRouter(wallet, routerAddress);
             routerSwap = new BakerySwapRouterSwap(router);
@@ -129,7 +128,7 @@ define("@scom/scom-dex-list/routerSwap.ts", ["require", "exports", "@scom/oswap-
 define("@scom/scom-dex-list/dexPair.ts", ["require", "exports", "@scom/oswap-openswap-contract", "@scom/oswap-impossible-swap-contract", "@scom/scom-dex-list/interfaces.ts"], function (require, exports, oswap_openswap_contract_2, oswap_impossible_swap_contract_1, interfaces_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.getDexPair = exports.IFSwapV3Pair = exports.NormalDexPair = exports.DexPair = void 0;
+    exports.parseSwapEvents = exports.getDexPair = exports.IFSwapV3Pair = exports.NormalDexPair = exports.DexPair = void 0;
     class DexPair {
         constructor(pair) {
             this.pair = pair;
@@ -152,24 +151,39 @@ define("@scom/scom-dex-list/dexPair.ts", ["require", "exports", "@scom/oswap-ope
     exports.IFSwapV3Pair = IFSwapV3Pair;
     function getDexPair(wallet, dexType, pairAddress) {
         let dexPair;
+        let pairContract;
         if (dexType === interfaces_2.IDexType.IFSwapV3) {
-            const router = new oswap_impossible_swap_contract_1.Contracts.ImpossiblePair(wallet, pairAddress);
-            dexPair = new IFSwapV3Pair(router);
+            pairContract = new oswap_impossible_swap_contract_1.Contracts.ImpossiblePair(wallet, pairAddress);
+            dexPair = new IFSwapV3Pair(pairContract);
         }
         else {
-            const router = new oswap_openswap_contract_2.Contracts.OSWAP_Pair(wallet, pairAddress);
-            dexPair = new NormalDexPair(router);
+            pairContract = new oswap_openswap_contract_2.Contracts.OSWAP_Pair(wallet, pairAddress);
+            dexPair = new NormalDexPair(pairContract);
         }
-        return dexPair;
+        return {
+            dexPair: dexPair,
+            contract: pairContract
+        };
     }
     exports.getDexPair = getDexPair;
+    function parseSwapEvents(wallet, receipt, pairAddresses) {
+        let events = [];
+        for (let pairAddress of pairAddresses) {
+            let pair = new oswap_openswap_contract_2.Contracts.OSWAP_Pair(wallet, pairAddress);
+            let event = pair.parseSwapEvent(receipt)[0];
+            events.push(event);
+        }
+        return events;
+    }
+    exports.parseSwapEvents = parseSwapEvents;
 });
-define("@scom/scom-dex-list", ["require", "exports", "@ijstech/eth-contract", "@ijstech/components", "@scom/scom-dex-list/routerSwap.ts", "@scom/scom-dex-list/interfaces.ts", "@scom/scom-dex-list/dexPair.ts"], function (require, exports, eth_contract_1, components_1, routerSwap_1, interfaces_3, dexPair_1) {
+define("@scom/scom-dex-list", ["require", "exports", "@ijstech/eth-contract", "@ijstech/components", "@scom/scom-dex-list/routerSwap.ts", "@scom/scom-dex-list/interfaces.ts", "@scom/scom-dex-list/dexPair.ts", "@ijstech/eth-wallet"], function (require, exports, eth_contract_1, components_1, routerSwap_1, interfaces_3, dexPair_1, eth_wallet_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.executeRouterSwap = exports.getRouterSwapTxData = exports.getDexPairReserves = exports.findDexDetail = exports.findDex = exports.getSwapProxySelectors = exports.IDexType = void 0;
+    exports.executeRouterSwap = exports.getRouterSwapTxData = exports.getDexPairReserves = exports.findDexDetail = exports.findDex = exports.parseSwapEvents = exports.getSwapProxySelectors = exports.IDexType = void 0;
     Object.defineProperty(exports, "getSwapProxySelectors", { enumerable: true, get: function () { return routerSwap_1.getSwapProxySelectors; } });
     Object.defineProperty(exports, "IDexType", { enumerable: true, get: function () { return interfaces_3.IDexType; } });
+    Object.defineProperty(exports, "parseSwapEvents", { enumerable: true, get: function () { return dexPair_1.parseSwapEvents; } });
     let moduleDir = components_1.application.currentModuleDir;
     function fullPath(path) {
         if (path.indexOf('://') > 0)
@@ -188,12 +202,14 @@ define("@scom/scom-dex-list", ["require", "exports", "@ijstech/eth-contract", "@
         return { dexInfo, dexDetail };
     }
     exports.findDexDetail = findDexDetail;
-    async function getDexPairReserves(wallet, chainId, dexCode, pairAddress, tokenInAddress, tokenOutAddress) {
+    async function getDexPairReserves(chainId, dexCode, pairAddress, tokenInAddress, tokenOutAddress) {
         const dexInfo = findDex(dexCode);
         if (!dexInfo)
             return Promise.reject(new Error('Dex not found'));
-        let pair = (0, dexPair_1.getDexPair)(wallet, dexInfo.dexType, pairAddress);
-        let reserves = await pair.getReserves();
+        const wallet = eth_wallet_2.RpcWallet.getRpcWallet(chainId);
+        let dexPairObject = (0, dexPair_1.getDexPair)(wallet, dexInfo.dexType, pairAddress);
+        let dexPair = dexPairObject.dexPair;
+        let reserves = await dexPair.getReserves();
         let reserveObj;
         if (new eth_contract_1.BigNumber(tokenInAddress.toLowerCase()).lt(tokenOutAddress.toLowerCase())) {
             reserveObj = {
@@ -265,7 +281,6 @@ define("@scom/scom-dex-list", ["require", "exports", "@ijstech/eth-contract", "@
         if (!dexInfo || !dexDetail)
             return Promise.reject(new Error('Dex not found'));
         let receipt;
-        // await application.loadPackage('@scom/oswap-trader-joe-contract', '*');
         let routerSwap = (0, routerSwap_1.getRouterSwap)(dexInfo.dexType, dexDetail.routerAddress);
         if (options.exactType === 'exactIn') {
             if (options.tokenInType === 'ETH') {
@@ -391,6 +406,15 @@ define("@scom/scom-dex-list", ["require", "exports", "@ijstech/eth-contract", "@
                         chainId: 56,
                         routerAddress: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
                         factoryAddress: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+                        tradeFee: {
+                            fee: '25',
+                            base: '10000'
+                        },
+                    },
+                    {
+                        chainId: 324,
+                        routerAddress: '0x5aEaF2883FBf30f3D62471154eDa3C0c1b05942d',
+                        factoryAddress: '0xd03D8D566183F0086d8D09A84E1e30b58Dd5619d',
                         tradeFee: {
                             fee: '25',
                             base: '10000'

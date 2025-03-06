@@ -1,4 +1,4 @@
-import { BigNumber, TransactionOptions, TransactionReceipt } from '@ijstech/eth-contract';
+import { BigNumber, TransactionOptions, TransactionReceipt, Event } from '@ijstech/eth-contract';
 export interface ITradeFeeInfo {
     fee: string;
     base: string;
@@ -49,4 +49,14 @@ export interface IDexPairReserves {
 export interface IGetDexPairReservesOutput {
     reserveA: BigNumber;
     reserveB: BigNumber;
+}
+
+export interface ISwapEvent {
+    sender: string;
+    amount0In: BigNumber;
+    amount1In: BigNumber;
+    amount0Out: BigNumber;
+    amount1Out: BigNumber;
+    to: string;
+    _event: Event;
 }

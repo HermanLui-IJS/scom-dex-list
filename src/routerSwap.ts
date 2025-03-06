@@ -1,7 +1,7 @@
 import { Contracts as OswapContracts } from '@scom/oswap-openswap-contract';
 import { Contracts as BakeryContracts } from '@scom/oswap-bakery-swap-contract';
 import { Contracts as TraderJoeContracts } from '@scom/oswap-trader-joe-contract';
-import { IRpcWallet, Wallet } from '@ijstech/eth-wallet';
+import { IRpcWallet, RpcWallet, Wallet } from '@ijstech/eth-wallet';
 import { IDexType, IRouterSwapOutput } from './interfaces';
 
 export abstract class RouterSwap {
@@ -105,10 +105,10 @@ export function getRouterSwap(dexType:IDexType, routerAddress:string): RouterSwa
     return routerSwap;
 }
 
-export async function getSwapProxySelectors(wallet: IRpcWallet, dexType: IDexType, chainId: number, routerAddress:string): Promise<string[]> {
+export async function getSwapProxySelectors(dexType: IDexType, chainId: number, routerAddress:string): Promise<string[]> {
     let routerSwap: RouterSwap;
     let router: any;
-    if (wallet.chainId != chainId) await wallet.switchNetwork(chainId)
+    let wallet = RpcWallet.getRpcWallet(chainId);
     if (dexType === IDexType.BakerySwap) {
         router = new BakeryContracts.BakerySwapRouter(wallet, routerAddress);
         routerSwap = new BakerySwapRouterSwap(router);
